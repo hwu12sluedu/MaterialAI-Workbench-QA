@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/hwu12sluedu/MaterialAI-Workbench/schemas/acceptance_manifest.schema.json",
+  "title": "MaterialAI Abaqus acceptance manifest",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "run_id",
+    "case_type",
+    "created_at",
+    "updated_at",
+    "status",
+    "config",
+    "stages",
+    "artifacts",
+    "execution_evidence",
+    "results",
+    "next_actions"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "run_id": {"type": "string", "minLength": 1},
+    "case_type": {"const": "abaqus_3d_plate_with_hole_tension"},
+    "created_at": {"type": "string"},
+    "updated_at": {"type": "string"},
+    "status": {
+      "enum": ["prepared", "blocked", "built", "solved", "postprocessed", "validated", "archived", "failed"]
+    },
+    "config": {"type": "object"},
+    "stages": {
+      "type": "object",
+      "required": ["prepare", "diagnostics", "build", "solve", "postprocess", "engineering_validation", "archive"],
+      "additionalProperties": {"$ref": "#/$defs/stage"}
+    },
+    "artifacts": {"type": "object", "additionalProperties": {"type": "string"}},
+    "execution_evidence": {"type": "object"},
+    "results": {"type": "object"},
+    "next_actions": {"type": "array", "items": {"type": "string"}},
+    "case_id": {"type": "string"}
+  },
+  "$defs": {
+    "stage": {
+      "type": "object",
+      "required": ["status", "message", "updated_at", "evidence"],
+      "properties": {
+        "status": {"enum": ["pending", "pass", "warn", "fail", "skipped", "blocked"]},
+        "message": {"type": "string"},
+        "updated_at": {"type": ["string", "null"]},
+        "evidence": {"type": "object"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

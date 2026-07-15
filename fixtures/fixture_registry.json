@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0",
+  "fixtures": [
+    {
+      "fixture_id": "plate-hole-default-v1",
+      "path": "manifests/plate-hole-default-v1.json",
+      "sha256": "82989eaf09cf6f7ed3c4df455766b18d7fb55da96f19299d156a77f198950f36",
+      "source": "generated-by-materialai-qa",
+      "license": "MIT",
+      "customer_data": false
+    }
+  ]
+}

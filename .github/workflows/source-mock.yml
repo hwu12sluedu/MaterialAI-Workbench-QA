@@ -1,0 +1,35 @@
+name: Product Source Mock
+
+on:
+  workflow_dispatch:
+    inputs:
+      product_ref:
+        description: MaterialAI Workbench branch, tag or commit
+        required: true
+        default: main
+
+jobs:
+  fake-mcp-contract:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          path: qa
+      - uses: actions/checkout@v5
+        with:
+          repository: hwu12sluedu/MaterialAI-Workbench
+          ref: ${{ inputs.product_ref }}
+          path: product
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e "qa[test]" -e product
+      - run: python -m pytest qa/tests/test_source_mock_cli.py --junitxml=qa/reports/source-mock-junit.xml
+        env:
+          MATERIALAI_QA_PRODUCT_ROOT: ${{ github.workspace }}\product
+          MATERIALAI_QA_DIAGNOSTICS_COMMAND: python -m material_ai_workbench.abaqus_diagnostics
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: source-mock-reports
+          path: qa/reports/

@@ -1,0 +1,21 @@
+name: Abaqus Real Gate
+
+on:
+  workflow_dispatch:
+
+jobs:
+  abaqus-2023:
+    runs-on: [self-hosted, windows, abaqus]
+    env:
+      MATERIALAI_QA_RUN_ABAQUS_REAL: "1"
+    steps:
+      - uses: actions/checkout@v5
+      - run: python -m pip install -e ".[test]"
+      - run: python -m pytest -m abaqus_real --junitxml=reports/abaqus-junit.xml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: abaqus-evidence
+          path: |
+            reports/
+            evidence/

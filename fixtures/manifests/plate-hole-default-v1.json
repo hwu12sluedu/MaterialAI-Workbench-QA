@@ -1,0 +1,25 @@
+{
+  "fixture_id": "plate-hole-default-v1",
+  "source": "generated-by-materialai-qa",
+  "license": "MIT",
+  "units": "mm-N-MPa",
+  "parameters": {
+    "length": 100.0,
+    "width": 50.0,
+    "thickness": 5.0,
+    "hole_radius": 5.0,
+    "youngs_modulus": 210000.0,
+    "poisson_ratio": 0.3,
+    "yield_strength": 250.0,
+    "tangent_modulus": 1000.0,
+    "displacement": 0.35,
+    "mesh_size": 4.0,
+    "cpus": 2
+  },
+  "expected": {
+    "status": "archived",
+    "max_displacement_mm": {"min": 0.315, "max": 0.438},
+    "reaction_force_n": {"min": 1.0},
+    "stress_concentration_ratio": {"min": 0.5, "max": 8.0}
+  }
+}

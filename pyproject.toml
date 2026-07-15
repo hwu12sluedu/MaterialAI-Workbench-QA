@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "materialai-workbench-qa"
+version = "0.1.0"
+description = "Independent black-box release tests for MaterialAI Workbench"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [{ name = "Han Wu" }]
+dependencies = [
+  "jsonschema>=4.23",
+  "pefile>=2024.8.26",
+  "psutil>=6.1",
+  "requests>=2.32",
+]
+
+[project.optional-dependencies]
+test = [
+  "black>=25.1",
+  "pytest>=8.3",
+  "pytest-html>=4.1",
+  "pytest-timeout>=2.3",
+]
+ui = [
+  "playwright>=1.50",
+  "pytest-playwright>=0.7",
+]
+windows = [
+  "pywinauto>=0.6.9",
+]
+
+[project.scripts]
+materialai-qa = "materialai_qa.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/hwu12sluedu/MaterialAI-Workbench-QA"
+Repository = "https://github.com/hwu12sluedu/MaterialAI-Workbench-QA"
+"Product repository" = "https://github.com/hwu12sluedu/MaterialAI-Workbench"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-markers"
+testpaths = ["tests"]
+markers = [
+  "portable: requires a MaterialAI Workbench Windows release ZIP",
+  "source_mock: drives the installed product CLI against a fake MCP bridge",
+  "ui: requires a running Streamlit app and Playwright browser",
+  "abaqus_real: consumes a real Abaqus installation and license",
+]
+
+[tool.black]
+target-version = ["py312"]
+line-length = 88

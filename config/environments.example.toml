@@ -1,0 +1,21 @@
+[portable-offline]
+requires_python = false
+requires_abaqus = false
+network = false
+
+[source-mock]
+requires_python = true
+requires_abaqus = false
+network = false
+fake_mcp = true
+
+[portable-abaqus]
+requires_python = false
+requires_abaqus = true
+abaqus_version = "2023"
+network = false
+
+[source-llm]
+requires_python = true
+requires_abaqus = false
+network = true
