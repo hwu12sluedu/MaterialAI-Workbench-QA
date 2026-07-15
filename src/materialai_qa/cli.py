@@ -28,6 +28,18 @@ def _release_paths(product_root: Path, version: str) -> tuple[Path, Path]:
 
 
 def _product_commit(product_root: Path) -> str | None:
+    top_level = subprocess.run(
+        ["git", "rev-parse", "--show-toplevel"],
+        cwd=product_root,
+        capture_output=True,
+        text=True,
+        timeout=10,
+        check=False,
+    )
+    if top_level.returncode != 0:
+        return None
+    if Path(top_level.stdout.strip()).resolve() != product_root.resolve():
+        return None
     completed = subprocess.run(
         ["git", "rev-parse", "HEAD"],
         cwd=product_root,
