@@ -1,7 +1,7 @@
 # Pinned product contracts
 
 These JSON Schemas were copied from MaterialAI Workbench commit `a941c23` for
-the `v0.3.0.dev0` release candidate. Update them only when the product's public
+the `v0.3.0` release. Update them only when the product's public
 artifact contract changes, and record the source commit in this file.
 
 | Contract | SHA256 |
