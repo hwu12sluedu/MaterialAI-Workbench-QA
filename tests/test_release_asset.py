@@ -27,6 +27,13 @@ def test_release_zip_hash_version_and_inventory(
     assert audit.forbidden_entries == ()
     assert audit.suspicious_entries == ()
 
+    with zipfile.ZipFile(release_zip) as archive:
+        entries = {name.replace("\\", "/") for name in archive.namelist()}
+    assert (
+        "MaterialAIWorkbench/_internal/webview/lib/" "Microsoft.Web.WebView2.Core.dll"
+    ) in entries
+    assert "MaterialAIWorkbench/README-START.txt" in entries
+
 
 def test_zip_slip_is_rejected(tmp_path: Path) -> None:
     archive = tmp_path / "unsafe.zip"

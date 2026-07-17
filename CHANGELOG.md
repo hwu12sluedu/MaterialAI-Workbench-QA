@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.0 - 2026-07-17
+
+- Added WebView2 assembly presence and frozen-runtime smoke coverage.
+- Added source/frozen UI checks for case quality gates and plate-hole batch safety confirmation.
+- Updated the default release candidate to MaterialAI Workbench `0.4.0a1`.
+
 ## 0.1.0 - 2026-07-15
 
 - Added independent ZIP, SHA256, PE-version and inventory auditing.

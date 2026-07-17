@@ -44,6 +44,17 @@ $env:MATERIALAI_QA_RUN_ABAQUS_REAL = "1"
 
 返回码 `0` 表示全部通过，`2` 表示仍有阻塞项，`1` 表示 QA 工具本身执行失败。
 
+`run_local_release_gate.ps1` 会把上一轮固定名称的 JUnit、HTML 和判定文件移入 `reports/archive/<时间戳>`，并且只使用本轮显式提供或本轮新生成的 MCP 诊断。未加 `-RunAbaqus` 时，离线和 UI 套件可以全部通过，但完整发布判定仍会因缺少本轮 Abaqus 实机证据而保持 `blocked`。
+
+已有本轮只读 MCP 诊断时可显式传入：
+
+```powershell
+.\scripts\run_local_release_gate.ps1 `
+  -ProductRoot D:\githubproject\pyLabFEA `
+  -Version 0.4.0a1 `
+  -McpDiagnostics D:\path\to\diagnostics.json
+```
+
 ## 5. CI 分层
 
 - `qa.yml`：托管 Windows Runner 上执行 QA 自检、Schema 与 Fake Bridge 单测。

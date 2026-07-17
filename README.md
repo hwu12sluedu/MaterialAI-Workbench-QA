@@ -23,7 +23,7 @@ $env:MATERIALAI_QA_PRODUCT_ROOT = "D:\githubproject\pyLabFEA"
 ```powershell
 .\.venv\Scripts\materialai-qa.exe gate `
   --product-root D:\githubproject\pyLabFEA `
-  --expected-version 0.3.0
+  --expected-version 0.4.0a1
 ```
 
 报告写入 `reports/`，可归档证据写入 `evidence/`。任何 P0 失败都不得发布正式版本。
@@ -44,7 +44,7 @@ $env:MATERIALAI_QA_PRODUCT_PYTHON = "conda run -n pylabfea"
 ```powershell
 .\scripts\run_local_release_gate.ps1 `
   -ProductRoot D:\githubproject\pyLabFEA `
-  -Version 0.3.0 `
+  -Version 0.4.0a1 `
   -RunAbaqus
 ```
 

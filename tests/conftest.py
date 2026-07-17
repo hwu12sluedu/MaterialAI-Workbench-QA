@@ -23,7 +23,7 @@ def product_root() -> Path:
 
 @pytest.fixture(scope="session")
 def expected_version() -> str:
-    return os.environ.get("MATERIALAI_QA_EXPECTED_VERSION", "0.3.0")
+    return os.environ.get("MATERIALAI_QA_EXPECTED_VERSION", "0.4.0a1")
 
 
 @pytest.fixture(scope="session")
