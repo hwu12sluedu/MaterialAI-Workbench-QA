@@ -19,6 +19,22 @@ def _exercise_core_pages(page, base_url: str, evidence_name: str) -> None:
     assert page.get_by_text("确认允许创建并提交此 Abaqus Job", exact=True).is_visible()
     page.screenshot(path=evidence / f"{evidence_name}_plate_hole.png", full_page=True)
 
+    page.get_by_text("案例库", exact=True).first.click()
+    page.get_by_text("仅导出质量门合格案例", exact=True).wait_for()
+    assert page.get_by_text("Abaqus 单位制", exact=True).is_visible()
+
+    page.get_by_text("带孔板批量", exact=True).first.click()
+    page.get_by_text("3D 带孔板批量仿真与代理模型", exact=True).wait_for()
+    confirmation = page.get_by_text("确认允许本次提交 Abaqus Jobs", exact=True)
+    if confirmation.count() == 0:
+        page.get_by_role("button", name="创建批量计划", exact=True).click()
+        confirmation.wait_for()
+    assert confirmation.is_visible()
+    assert page.get_by_role("button", name="运行真实求解", exact=True).is_disabled()
+    page.screenshot(
+        path=evidence / f"{evidence_name}_plate_hole_batch.png", full_page=True
+    )
+
 
 @pytest.mark.ui
 def test_source_system_diagnostics_and_plate_hole_pages(page) -> None:

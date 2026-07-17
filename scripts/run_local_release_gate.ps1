@@ -3,6 +3,7 @@ param(
     [Parameter(Mandatory = $true)][string]$Version,
     [string]$AppUrl = "http://127.0.0.1:8501",
     [string]$BrowserChannel = "msedge",
+    [string]$McpDiagnostics = "",
     [switch]$RunAbaqus
 )
 
@@ -20,6 +21,29 @@ $env:MATERIALAI_QA_RUN_UI = "1"
 $env:MATERIALAI_QA_RUN_FROZEN_UI = "1"
 $env:MATERIALAI_QA_APP_URL = $AppUrl
 Set-Location $QaRoot
+$RunStartedAt = Get-Date
+
+# Archive fixed-name outputs so stale suites cannot be counted in this run.
+$ReportsRoot = Join-Path $QaRoot "reports"
+$ArchiveRoot = Join-Path $ReportsRoot ("archive\" + $RunStartedAt.ToUniversalTime().ToString("yyyyMMddTHHmmssZ"))
+$GeneratedReports = @(
+    "unit-junit.xml", "unit.html",
+    "source-mock-junit.xml", "source-mock.html",
+    "release-audit-junit.xml", "release-audit.html",
+    "portable-lifecycle-junit.xml", "portable-lifecycle.html",
+    "portable-boundaries-junit.xml", "portable-boundaries.html",
+    "ui-junit.xml", "ui.html",
+    "abaqus-real-junit.xml", "abaqus-real.html",
+    "release_decision.json", "release_decision.md",
+    "release_decision_evidence.zip"
+)
+foreach ($Name in $GeneratedReports) {
+    $Source = Join-Path $ReportsRoot $Name
+    if (Test-Path -LiteralPath $Source) {
+        New-Item -ItemType Directory -Force -Path $ArchiveRoot | Out-Null
+        Move-Item -LiteralPath $Source -Destination (Join-Path $ArchiveRoot $Name) -Force
+    }
+}
 
 function Invoke-Gate {
     param([Parameter(Mandatory = $true)][string[]]$Arguments)
@@ -70,9 +94,20 @@ if ($RunAbaqus) {
     )
 }
 
-$diagnostics = Get-ChildItem (Join-Path $ProductRoot "workspace\diagnostics") `
-    -Recurse -Filter diagnostics.json -ErrorAction SilentlyContinue |
-    Sort-Object LastWriteTime -Descending | Select-Object -First 1
+$diagnostics = $null
+if (-not [string]::IsNullOrWhiteSpace($McpDiagnostics)) {
+    $diagnostics = Get-Item -LiteralPath (Resolve-Path -LiteralPath $McpDiagnostics).Path
+}
+elseif ($RunAbaqus) {
+    $McpOutputRoot = Join-Path $QaRoot ("evidence\mcp_live\" + $RunStartedAt.ToUniversalTime().ToString("yyyyMMddTHHmmssZ"))
+    & conda run -n pylabfea materialai-diagnostics --output-root $McpOutputRoot
+    if ($LASTEXITCODE -ne 0) {
+        throw "Fresh live MCP diagnostics failed with exit code $LASTEXITCODE"
+    }
+    $diagnostics = Get-ChildItem -LiteralPath $McpOutputRoot `
+        -Recurse -Filter diagnostics.json -ErrorAction Stop |
+        Sort-Object LastWriteTime -Descending | Select-Object -First 1
+}
 $summaryArgs = @("summarize", "--reports", "reports", "--evidence", "evidence")
 if ($diagnostics) {
     $summaryArgs += @("--mcp-diagnostics", $diagnostics.FullName)
